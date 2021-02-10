@@ -16,12 +16,15 @@ public class CasinoGame {
         while (true){
             System.out.println("please enter one of the following");
             System.out.println("1 - To play BlackJack");
+            System.out.println("2 - To play Roulette");
             int UserChoice = input.nextInt();
             
             
             switch (UserChoice) {
                 case 1:
-                    BlackJack();        
+                    BlackJack();  
+                case 2: 
+                    Roulette();
             }
    
         }
@@ -132,5 +135,104 @@ public class CasinoGame {
         
         
     }
+    public static void Roulette(){
+        
+        try{
+            System.out.println("welcome to Roulette!");
+            Thread.sleep(1000);
+            System.out.println("You will need to choose a colour and number you wish to bet on.");
+            Thread.sleep(1000);
+            System.out.println("lets begin...");
+            Thread.sleep(1000);
+            
+            while(true){
+
+
+                System.out.println("Firstly chose how much you want to bet on a colour :");
+                int RouletteBetColour = input.nextInt(); 
+
+                System.out.println("Pick a colour, Red (x2) - Black (x2)- Green (x16)");
+                String Colour = input.next(); 
+                System.out.println("Now chose how much you want to bet on a Number :");
+                int RouletteBetNumber = input.nextInt(); 
+
+                System.out.println("pick a number between 1 - 36 (x35 if you win): ");
+                int Number = input.nextInt(); 
+                System.out.println("The ball has been spun");            
+                Thread.sleep(1000);
+                System.out.println("Rolling...");
+                Thread.sleep(1000);
+                System.out.println("Rolling...");
+                Thread.sleep(1000);
+
+                int RandomNum = Random(36);
+                String RandomColour = RandomColour();
+
+                System.out.println("The Colour was " + RandomColour);
+                Thread.sleep(1000);
+                System.out.println("And the Number was " + RandomNum);
+                Thread.sleep(1000);
+                System.out.println("this means...");
+                Thread.sleep(1000);
+
+
+                if (Number == RandomNum){
+                    System.out.println("CONGRATS you guessed the number correct");
+                    System.out.println("You won x35 of you bet");
+                    PlayerCoins = PlayerCoins + (RouletteBetNumber * 35);
+
+                }else{
+                    System.out.println("Sorry you didnt win the number ");
+                    PlayerCoins = PlayerCoins - RouletteBetNumber;
+
+                }
+                if (Colour.equalsIgnoreCase(RandomColour)){
+                    System.out.println("CONGRATS you guessed the colour correct");
+                    if (Colour.equalsIgnoreCase("Green")){
+                        System.out.println("You won x16 of your bet");
+                        PlayerCoins = PlayerCoins + (RouletteBetColour * 16);
+                    }else{
+                        System.out.println("You won x2 of you bet");
+                        PlayerCoins = PlayerCoins + (RouletteBetColour * 2);
+                    }
+                }else{
+                    System.out.println("Sorry you didn't win the colour");
+                    PlayerCoins = PlayerCoins - RouletteBetColour;
+                }
+
+
+                System.out.println("YOUR BALANCE IS NOW : " + PlayerCoins);
+                
+                System.out.println("Do you want to play again? \n1 -  for yes \n2 - for no");
+                int PlayAgain = input.nextInt();
+                if (PlayAgain == 2){
+                    break;
+                }    
+                    
+            }  
+            
+
+
+        }    
+        catch (Exception e){
+            System.out.println("error" + e);
+        }
+        
+    }
+    public static String RandomColour(){
+        Random random = new Random(); 
+        String[] ColourArray = {"green", "red", "black"};
+        int tempRanNum = random.nextInt(36);
+        if (tempRanNum == 1 || tempRanNum == 0){
+            return (ColourArray[0]);
+   
+        }else if ((tempRanNum % 2) == 0){
+            return (ColourArray[1]);
+        }else{
+            return (ColourArray[2]);
+        }
+        
+    }
+    
     
 }
