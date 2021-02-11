@@ -1,22 +1,31 @@
 package casinogame;
 
 import java.util.*; 
+import java.io.*;
 
 
 public class CasinoGame {
-    public static int PlayerCoins = 1000;
-
+    public static ArrayList<Data> UserData = new ArrayList<>();
+    public static int PlayerCoins;
     public static Scanner input = new Scanner(System.in);
-    
+    public static String path = System.getProperty("user.dir") + "\\users.txt";
+    public static String Username;
+    public static String Userpassword;
+    public static String line;
     public static void main(String[] args) {
         System.out.println("Hi, and welcome to my casino! \nYou can pick games to play and you scores will be recorded");
         
+        System.out.println("if you want to check the code works first create a account \nFYI the save and exit or changeing the player coin total i couldn't figure out ");
+        
+        Login();
         
         
         while (true){
             System.out.println("please enter one of the following");
             System.out.println("1 - To play BlackJack");
             System.out.println("2 - To play Roulette");
+            System.out.println("3 - To Use the Slot Machine");
+            System.out.println("4 - To Save and Exit");
             int UserChoice = input.nextInt();
             
             
@@ -25,6 +34,10 @@ public class CasinoGame {
                     BlackJack();  
                 case 2: 
                     Roulette();
+                case 3:
+                    SlotMachine();
+                case 4:
+                    SaveAndExit(); 
             }
    
         }
@@ -234,5 +247,172 @@ public class CasinoGame {
         
     }
     
+    public static void SlotMachine(){
+        try{
+            System.out.println("welcome the slot machine!");
+            Thread.sleep(1000);
+            System.out.println("You will need to choose a number between 1 and 10 then spin the wheel \nYou have a 1 in 5 chance to win each time.");
+            Thread.sleep(1000);
+            System.out.println("lets begin...");
+            Thread.sleep(1000);
+            while (true){
+                System.out.println("Enter how much you would like to bet :");
+                int SlotBet = input.nextInt(); 
+                System.out.println("Pick your number : (1 - 10)");
+                int PlayerGuess = input.nextInt(); 
+
+                Thread.sleep(1000);
+                while (true){
+                    int win = Random(5);
+                    if (win == 1){
+                        System.out.print(PlayerGuess + "  ");
+                        Thread.sleep(1000);
+                        System.out.print(PlayerGuess + "  ");
+                        Thread.sleep(1000);
+                        System.out.print(PlayerGuess + "  ");
+                        Thread.sleep(1000);
+                        System.out.println("Congrats u won!");
+                        PlayerCoins = PlayerCoins + (SlotBet * 2);
+                        System.out.println("YOUR BALANCE IS NOW : " + PlayerCoins);
+                        
+                        break;
+                    }else{
+                        System.out.print(Random(10) + "  ");
+                        Thread.sleep(1000);
+                        System.out.print(Random(10) + "  ");
+                        Thread.sleep(1000);
+                        System.out.print(Random(10) + "  ");
+                        Thread.sleep(1000);
+                        System.out.println("Sorry, you didn't win this time");
+                        PlayerCoins = PlayerCoins - SlotBet;
+                        System.out.println("YOUR BALANCE IS NOW : " + PlayerCoins);
+                        System.out.println("would you like to spin again with the same bet and number? yes or no :");
+                        String Spin = input.next();
+                        if (Spin.equalsIgnoreCase("no")){
+                            break;
+                        }
+                      
+                    }
+                }
+            System.out.println("Do you want to play again? \n1 -  for yes \n2 - for no");
+            int PlayAgain = input.nextInt();
+            if (PlayAgain == 2){
+                break;
+            }       
+            }    
+            
+           
+            
+       
+
+        }    
+        catch (Exception e){
+            System.out.println("error" + e);
+        }
+        
+        
+        
+    }
+    
+    public static void Login (){
+        
+        System.out.println("1 - LogIn");
+        System.out.println("2 - Register");
+        int pick = input.nextInt(); 
+        
+        switch (pick){
+            case 1:
+                boolean correct = false; 
+                System.out.println("enter Name:");
+                String UserName = input.next(); 
+                System.out.println("enter Password:");
+                String UserPassword = input.next();
+                
+                try{
+                    BufferedReader read = new BufferedReader(new FileReader(path));
+                    int i = 0;
+                    while ((line = read.readLine()) != null){
+                        String[] info = line.split(", ");
+
+                        if (info[i].equalsIgnoreCase(UserName)){
+                            if (info[i+1].equalsIgnoreCase(UserPassword)){
+                                System.out.println("Welcome");
+                                PlayerCoins = Integer.parseInt(info[i+2]);
+                                Username = UserName;
+                                Userpassword = UserPassword;
+                                correct = true; 
+                                
+                            }
+                            
+                        }
+                        i++;
+                    }
+                    if (correct == false){
+                        
+                        System.out.println("sorry wrong username or password");
+                        System.exit(0);
+                    }
+                    
+                    
+                    
+                }catch (Exception e){
+                    System.out.println("error" + e);
+                }
+                
+            break;
+                
+                
+                
+            case 2:
+                System.out.println("enter Name:");
+                String Name = input.next(); 
+                System.out.println("enter Password");
+                String Password = input.next(); 
+                int coins = 1000; 
+                Data NewCustomer = new Data(Name, Password, coins);
+                UserData.add(NewCustomer);
+                try{
+                    FileWriter writeToFile = new FileWriter(path, true); 
+                    PrintWriter printToFile = new PrintWriter(writeToFile);
+                    
+                    for (int i = 0; i < UserData.size(); i++) {
+                        printToFile.println(UserData.get(i).toString());
+                        
+                    }
+                    printToFile.close();
+                    writeToFile.close();
+            
+
+                }catch (Exception e){
+                    System.out.println("error" + e);
+                }
+                System.out.println("Ok you are in the system. As a welcome you get 1000 coins");
+            break;    
+        }
+        
+        
+        
+    }
+    
+    public static void SaveAndExit(){
+        System.exit(0);
+        
+//        Data overide = new Data(Username, Userpassword, PlayerCoins);
+//        UserData.add(overide);
+//        try{
+//            FileWriter writeToFile = new FileWriter(path, false); 
+//            PrintWriter printToFile = new PrintWriter(writeToFile);
+//            BufferedReader read = new BufferedReader(new FileReader(path));
+//            
+//            while ((line = read.readLine()) != null){
+//                        String[] info = line.split(", ");
+//
+//            
+//            
+//        }catch (Exception e){
+//            System.out.println("error" + e);
+//        }
+//        
+    }
     
 }
